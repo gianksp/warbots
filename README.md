@@ -1,4 +1,4 @@
-![Warbots](https://warbots-a0890.firebaseapp.com/images/logo.png)
+![Warbots](https://warbots.io/images/logo.png)
 
 [Warbots.io](https://warbots.io) is a **programming game** where the goal is to **build and program (using Javascript)** a combat bot to compete against other robots in a battle arenas and player vs environment scenarios . The player is the programmer of the bot, who will have no direct influence on the game. Instead, the player must write the AI of the bot telling it how to behave and react on events occurring in the battle arena.
 
