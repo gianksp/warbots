@@ -24,3 +24,11 @@ Topics
 - Booleans and conditionals
 - Lists and loops
 - Other data structures
+
+Skills developed
+----------------
+
+- Programming
+- Physics
+- Mathematics
+- Strategy
