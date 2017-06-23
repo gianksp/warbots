@@ -16,8 +16,18 @@ Warbots is not designed as a gamified way to learn to program but rather a full 
 - [Git](https://github.com) for version control system
 - [TypeScript](https://www.typescriptlang.org/) for programming language
 
-Topics
-------
+Game Genre/Category
+-------------------
+
+- Simulation, Top Down, Programming, Mecha, Battle Arena, PVP, PVE
+
+Game Physics
+------------
+
+- 2D Physics
+
+Learnin Topics
+--------------
 
 - Intro to object oriented programming
 - Variables and functions
