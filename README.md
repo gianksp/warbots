@@ -7,3 +7,20 @@ The game is designed to help you learn Programming, and have fun doing it. Bots 
 Warbot's battles take place in a battlefield, where combat bots fight it out until only one is left. Please notice that Warbots contains no gore, no blood, no people, and no politics. The battles are simply for the excitement of competition that we love so much.
 
 [Visit the Wiki](https://github.com/gianksp/warbots/wiki)
+
+Initiative
+----------
+
+Warbots is not designed as a gamified way to learn to program but rather a full programming game where the gameplay is mainly focused during the coding / debugging phase. Through the game we guide players from zero coding experience to their first bot, involving them with all the tools necessary for them to become proficient developers. Development is done around TypeScript an object oriented super set of Javascript. Among the topics covered and needed in the game we help with:
+
+- [Git](https://github.com) for version control system
+- [TypeScript](https://www.typescriptlang.org/) for programming language
+
+Topics
+------
+
+- Intro to object oriented programming
+- Variables and functions
+- Booleans and conditionals
+- Lists and loops
+- Other data structures
