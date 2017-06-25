@@ -26,8 +26,8 @@ Game Physics
 
 - 2D Physics
 
-Learnin Topics
---------------
+Learning Topics
+---------------
 
 - Intro to object oriented programming
 - Variables and functions
