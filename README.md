@@ -26,7 +26,7 @@ Game Physics
 
 - 2D Physics
 
-![](http://i.imgur.com/9u3bDIh.gif)
+![](http://i.imgur.com/zNdRzEJ.gif)
 
 [Codepen](https://codepen.io/gianksp/pen/LLjqvM/#0)
 
