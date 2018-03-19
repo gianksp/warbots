@@ -1,32 +1,85 @@
-var config = {
-  // 打包的入口文件
-  entry: './main.js',
+const webpack = require('webpack')
+const ExtractTextPlugin = require("extract-text-webpack-plugin")
+const config = {
+    entry: [
+        'webpack-dev-server/client?http://localhost:8080',
+        'webpack/hot/only-dev-server',
+        './src/index.js'
+    ],
+    module: {
+        rules: [{
+                test: /\.jsx?$/,
+                exclude: /node_modules/,
+                use: [
+                    'react-hot-loader',
+                    'babel-loader'
+                ]
+            },
+            {
+                test: /\.css$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: 'css-loader'
 
-  // 配置打包结果，path定义输出文件夹，filename定义打包结果文件的名称
-  output: {
-    path: './',
-    filename: 'index.js'
-  },
+                })
+            },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: ['babel-loader', 'eslint-loader']
+            }
+        ],
+    },
+    resolve: {
+        extensions: ['*', '.js', '.jsx', '.css'],
+    },
+    output: {
+        path: __dirname + '/dist',
+        publicPath: '/',
+        filename: 'bundle.js'
+    },
+    plugins: [
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+            }
+        })
+    ],
+    devServer: {
+        contentBase: './dist',
+        historyApiFallback: true,
+        open: true
+    },
+    node: {
+      console: true,
+      fs: 'empty',
+      net: 'empty',
+      tls: 'empty'
+    }
 
-  // 设置服务器端口号
-  devServer: {
-    inline: true,
-    port: 7777
-  },
+}
+if (process.env.NODE_ENV === 'production') {
+    config.devtool = "cheap-module-source-map"
+    config.plugins.push(
+        new webpack.optimize.UglifyJsPlugin({ sourceMap: true }),
+        new ExtractTextPlugin({
+            filename: 'bundle.css',
+            disable: false,
+            allChunks: true
+        }),
+        new webpack.optimize.AggressiveMergingPlugin({
+            minSizeReduce: 1,
+            moveToParents: true
 
-  // 配置模块的处理逻辑，用loaders定义加载器
-  module: {
-    loaders: [
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        loader: 'babel',
-        query: {
-          presets: ['es2015', 'react']
-        }
-      }
-    ]
-  }
+        })
+    )
+
+} else {
+    config.devtool = "cheap-module-eval-source-map"
+    config.plugins.push(
+        new webpack.optimize.UglifyJsPlugin({ sourceMap: true }),
+        new ExtractTextPlugin({ disable: true })
+    )
 }
 
-module.exports = config;
+module.exports = config

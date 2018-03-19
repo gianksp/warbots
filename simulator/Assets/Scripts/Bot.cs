@@ -38,7 +38,6 @@ public class Bot : MonoBehaviour
 	private Vector3 __applyTorque = Vector3.zero;
 	private bool __isFiring = false;
 
-	private AMQController __controller;
 	private Rigidbody __rb;
 
 	private BasicMessage.MatchEvent __state = BasicMessage.MatchEvent.PREPARING;
@@ -53,7 +52,6 @@ public class Bot : MonoBehaviour
 	void Awake ()
 	{
 		__rb = gameObject.GetComponent<Rigidbody> ();
-		__controller = gameObject.GetComponent<AMQController> ();
 	}
 
 	/// <summary>
@@ -86,19 +84,19 @@ public class Bot : MonoBehaviour
 				msg.isFiring = ebot.__isFiring;
 				msg.maxHeat = ebot.frame.maxHeat;
 				msg.maxHp = ebot.frame.maxHp;
-				__controller.SendScanUpdate (msg);
+				Link.SendScanMessage(msg);
 				break;
 			case BasicMessage.Scannable.BULLET:
 				msg.type = BaseObject.BaseObjectType.PROJECTILE.ToString();
-				__controller.SendScanUpdate (msg);
+				Link.SendScanMessage(msg);
 				break;
 			case BasicMessage.Scannable.OBSTACLE:
 				msg.type = BaseObject.BaseObjectType.OBSTACLE.ToString();
-				__controller.SendScanUpdate (msg);
+				Link.SendScanMessage(msg);
 				break;
 			case BasicMessage.Scannable.BOUNDARY:
 				msg.type = BaseObject.BaseObjectType.BOUNDARY.ToString();
-				__controller.SendScanUpdate (msg);
+				Link.SendScanMessage(msg);
 				break;
 			}
 		} catch(Exception ex) {
@@ -133,40 +131,28 @@ public class Bot : MonoBehaviour
 	/// <summary>
 	/// Handle physics
 	/// </summary>
-	void FixedUpdate ()
+	void LateUpdate ()
 	{
 		/************************* DOWNSTREAM SIMULATOR -> CLIENT ***********************/
 
 		//Game state changed
-		if (__state == BasicMessage.MatchEvent.PREPARING) {
-			__state = BasicMessage.MatchEvent.START;
-			MatchStateMessage msg = new MatchStateMessage ();
-			msg.state = __state;
-			__controller.SendMatchUpdate (msg, __state);
-		}
+		// if (__state == BasicMessage.MatchEvent.PREPARING) {
+		// 	__state = BasicMessage.MatchEvent.START;
+		// 	MatchStateMessage msg = new MatchStateMessage ();
+		// 	msg.state = __state;
+		// 	Link.SendMatchUpdateMessage(msg);
+		// }
 
-		//Hp downstream
-		if (__currentHp != frame.currentHp) {
-			__currentHp = frame.currentHp;
-			__controller.SendHpUpdate (__currentHp);
-		}
-
-		//Temp downstream
-		if (__currentHeat != frame.currentHeat) {
-			__currentHeat = frame.currentHeat;
-			__controller.SendTempUpdate (__currentHeat);
-		}
-			
 		//Position downstream
 		if (__currentPos != transform.position) {
 			__currentPos = transform.position;
-			__controller.SendPositionUpdate (__currentPos);
+			Link.SendPositionUpdateMessage (__currentPos);
 		}
 
 		//Rotation downstream
 		if (__currentRot != transform.rotation) {
 			__currentRot = transform.rotation;
-			__controller.SendRotationUpdate (__currentRot);
+			Link.SendRotationUpdateMessage (__currentRot);
 		}
 
 		/************************* UPSTREAM CLIENT -> SIMULATOR ***********************/
