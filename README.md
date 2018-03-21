@@ -1,6 +1,6 @@
 ![Warbots](https://warbots.io/images/logo.png)
 
-[Warbots.io](https://warbots.io) is an **open source programming game** where the goal is to **program the logic** a combat robot (using any Programming Language) to complete challenges or battle other bots in 3D simulations. The player is the programmer of the bot, who will be able to control the bot actions via coding.
+[Warbots.io](https://warbots.io) is an **open source programming game** where the goal is to **program the logic** of a combat robot (using any Programming Language) to complete challenges or battle other bots in 3D simulations. The player is the programmer of the bot, who will be able to control the bot actions by running a bot program.
 
 Warbot's battles take place in a battlefields called stages, where bots are faced with navigational and combat challenges both single and multiplayer (vs / coop).
 
