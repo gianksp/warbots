@@ -109,8 +109,71 @@ Resources:
               - '*'
 
   # Cognito users can use IoT
-  IoTPolicyPrincipalAttachment: 
+  IoTPolicyPrincipalAttachment:
     Type: "AWS::IoT::PolicyPrincipalAttachment"
-    Properties: 
+    Properties:
       PolicyName: IoTPolicy
       Principal: !Ref IdentityPool
+
+  # Hosted static site
+  WebSiteBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+
+  # Site policy
+  BucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      PolicyDocument:
+        Id: SitePolicy
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref WebSiteBucket
+                - /*
+      Bucket: !Ref WebSiteBucket
+
+  # Cloudfront distribution
+  WebsiteCloudfront:
+    Type: AWS::CloudFront::Distribution
+    DependsOn:
+    - WebSiteBucket
+    Properties:
+      DistributionConfig:
+        Comment: Cloudfront Distribution pointing to Website Bucket
+        Origins:
+        - DomainName: !Select [2, !Split ["/", !GetAtt WebSiteBucket.WebsiteURL]]
+          Id: S3Origin
+          CustomOriginConfig:
+            HTTPPort: '80'
+            HTTPSPort: '443'
+            OriginProtocolPolicy: http-only
+        Enabled: true
+        HttpVersion: 'http2'
+        DefaultRootObject: index.html
+        Aliases:
+          - 'www.warbots.io'
+        DefaultCacheBehavior:
+          AllowedMethods:
+          - GET
+          - HEAD
+          Compress: true
+          TargetOriginId: S3Origin
+          ForwardedValues:
+            QueryString: true
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+        PriceClass: PriceClass_All
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: 'true'
