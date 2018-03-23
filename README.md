@@ -1,17 +1,15 @@
 ![Warbots](https://warbots.io/images/logo.png)
 
-[Warbots.io](https://warbots.io) is an **open source programming game** where the goal is to **program (using any Programming Language)** a combat bot to compete against challenges and other robots in a battle arenas. The player is the programmer of the bot, who will have no direct influence on the game. Instead, the player must write the AI of the bot telling it how to behave and react on events occurring in the battle arena.
+[Warbots.io](https://warbots.io) is an **open source programming game** where the goal is to **program the logic** of a combat robot (using any Programming Language) to complete challenges or battle other bots in 3D simulations. The player is the programmer of the bot, who will be able to control the bot actions by running a bot program.
 
-The game is designed to help you learn Programming, and have fun doing it.
-
-Warbot's battles take place in a battlefields called stages, where combat bots are faced with navigational and combat challenges and/or fight it out until only one is left. Please notice that Warbots contains no gore, no blood, no people, and no politics. The battles are simply for the excitement of competition that we love so much.
+Warbot's battles take place in a battlefields called stages, where bots are faced with navigational and combat challenges both single and multiplayer (vs / coop).
 
 [Visit the Wiki](https://github.com/gianksp/warbots/wiki)
 
 Initiative
 ----------
 
-Warbots is not designed as a gamified way to learn to program but rather a full programming game where the gameplay is mainly focused during the coding / debugging phase. Through the game we guide players from zero coding experience to their first bot, involving them with all the tools necessary for them to become proficient developers. There is an SDK available for python as well as a sample bot. Among the topics covered and needed in the game we help with:
+Warbots is a programming game where the gameplay is mainly focused during the coding / debugging phase of your Bot. Tutorials and guides will be added through the game to guide players from zero coding experience on their first bot, get them involved with all the tools necessary for them to become proficient developers. There is an SDK available for python as well as a sample bot. Among the topics covered and needed in the game we help with:
 
 - [Git](https://github.com) for version control system
 - [Python](https://www.learnpython.org/) for programming language
@@ -19,7 +17,7 @@ Warbots is not designed as a gamified way to learn to program but rather a full 
 Game Genre/Category
 -------------------
 
-- Simulation, Top Down, Programming, Mecha, Battle Arena
+- Simulation, Top Down, Programming, Mecha, Battle Arena, Multiplayer
 
 Game Physics
 ------------
@@ -30,19 +28,10 @@ Game Physics
 
 [Codepen](https://codepen.io/gianksp/pen/LLjqvM/#0)
 
-Learning Topics
----------------
 
-- Intro to object oriented programming
-- Variables and functions
-- Booleans and conditionals
-- Lists and loops
-- Other data structures
+Development
+----------
 
-Skills developed
-----------------
+The bots can be programmed using any language but will require the integration with AWS Cognito and Authentication. I will be providing guides for this. To start, there will be available a Python SDK and a Bot file for players to start.
 
-- Programming
-- Physics
-- Mathematics
-- Strategy
+Please be patient with the development.
