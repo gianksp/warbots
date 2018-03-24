@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+      <meta property="og:app_id"             content="305198353259747" />
+      <meta property="og:url"                content="https://warbots-a0890.firebaseapp.com/index.html" />
+      <meta property="og:type"               content="article" />
+      <meta property="og:title"              content="Warbots.io" />
+      <meta property="og:description"        content="Assemble, Code, Fight!. Learn Javascript by programming combat robots and fighting in arenas!" />
+      <meta property="og:image:secure_url"   content="https://warbots-a0890.firebaseapp.com/images/logo.png" />
+
+      <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId            : '305198353259747',
+          autoLogAppEvents : true,
+          xfbml            : true,
+          version          : 'v2.9'
+        });
+        FB.AppEvents.logPageView();
+      };
+
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "//connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
+    </script>
+
+    <link rel="stylesheet" href="styles/main.css">
+  </head>
+  <body>
+
+    <div class="fb-like" data-href="https://warbots-a0890.firebaseapp.com/index.html" data-layout="standard" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
+
+    <div id="fb-root"></div>
+
+    <a href="https://github.com/gianksp/warbots/wiki/1.-Getting-Started" style="    position: absolute;
+    left: 45%;
+    top: 20px;">Visit our WIKI</a>
+
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.9&appId=305198353259747";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
+  </body>
+</html>

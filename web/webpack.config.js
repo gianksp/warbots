@@ -1,5 +1,7 @@
 const webpack = require('webpack')
 const ExtractTextPlugin = require("extract-text-webpack-plugin")
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 const config = {
     entry: [
         'webpack-dev-server/client?http://localhost:8080',
@@ -43,6 +45,10 @@ const config = {
             'process.env': {
                 'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
             }
+        }),
+        new HtmlWebpackPlugin({
+            title: 'Warbots',
+            template: './src/index.html'
         })
     ],
     devServer: {
