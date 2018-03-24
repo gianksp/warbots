@@ -1,4 +1,19 @@
 AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+
+  DomainName:
+    Type: String
+    Description: The DNS name of an Amazon Route 53 hosted zone e.g. warbots.io
+    AllowedPattern: (?!-)[a-zA-Z0-9-.]{1,63}(?<!-)
+    ConstraintDescription: must be a valid DNS zone name.
+  WebsiteSubDomainName:
+    Type: String
+    Description: Subdomain for website
+  SimulatorSubDomainName:
+    Type: String
+    Description: Subdomain for simulator
+
 Resources:
 
   # Cognito Federated Identity Pool with anonymous access
@@ -125,7 +140,7 @@ Resources:
         ErrorDocument: error.html
 
   # Site policy
-  BucketPolicy:
+  WebsiteBucketPolicy:
     Type: 'AWS::S3::BucketPolicy'
     Properties:
       PolicyDocument:
@@ -143,7 +158,7 @@ Resources:
                 - /*
       Bucket: !Ref WebSiteBucket
 
-  # Cloudfront distribution
+  # Cloudfront distribution website
   WebsiteCloudfront:
     Type: AWS::CloudFront::Distribution
     DependsOn:
@@ -162,7 +177,75 @@ Resources:
         HttpVersion: 'http2'
         DefaultRootObject: index.html
         Aliases:
-          - 'www.warbots.io'
+          - !Ref DomainName
+          - !Sub
+            - ${Subdomain}.${Domain}
+            - { Domain: !Ref DomainName, Subdomain: !Ref WebsiteSubDomainName }
+        DefaultCacheBehavior:
+          AllowedMethods:
+          - GET
+          - HEAD
+          Compress: true
+          TargetOriginId: S3Origin
+          ForwardedValues:
+            QueryString: true
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+        PriceClass: PriceClass_All
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: 'true'
+
+  # Hosted simulation site
+  SimulatorBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+
+  # Simulator policy
+  SimulatorBucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      PolicyDocument:
+        Id: SimulatorPolicy
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref SimulatorBucket
+                - /*
+      Bucket: !Ref SimulatorBucket
+
+  # Cloudfront distribution simulator
+  SimulatorCloudfront:
+    Type: AWS::CloudFront::Distribution
+    DependsOn:
+    - SimulatorBucket
+    Properties:
+      DistributionConfig:
+        Comment: Cloudfront Distribution pointing to Simulator Bucket
+        Origins:
+        - DomainName: !Select [2, !Split ["/", !GetAtt SimulatorBucket.WebsiteURL]]
+          Id: S3Origin
+          CustomOriginConfig:
+            HTTPPort: '80'
+            HTTPSPort: '443'
+            OriginProtocolPolicy: http-only
+        Enabled: true
+        HttpVersion: 'http2'
+        DefaultRootObject: index.html
+        Aliases:
+          - !Sub
+            - ${Subdomain}.${Domain}
+            - { Domain: !Ref DomainName, Subdomain: !Ref SimulatorSubDomainName }
         DefaultCacheBehavior:
           AllowedMethods:
           - GET
