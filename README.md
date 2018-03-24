@@ -1,4 +1,4 @@
-![Warbots](https://warbots.io/images/background.png)
+![Warbots](https://warbots.io/images/logo.png)
 
 [Warbots.io](https://warbots.io) is an **open source programming game** where the goal is to **program the logic** of a combat robot (using any Programming Language) to complete challenges or battle other bots in 3D simulations. The player is the programmer of the bot, who will be able to control the bot actions by running a bot program.
 
@@ -13,7 +13,9 @@ How It Works
 - Take a note of the ***link id*** that is generated for your session
 - Follow the link to download the python bot sample template or use your own
 - Run your project using the ***link id*** reference from above
-```console
+
+```bash
+# Example python template
 pip install requirements.txt
 python run bot.py -l {link_id}
 ```
