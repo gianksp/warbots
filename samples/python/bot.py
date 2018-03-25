@@ -37,8 +37,7 @@ class BotOS:
         Method that gets called on every cycle. Currently set to be called
         on every frame (60 frames per second configuration)
         """
-        # print("Your code for handling each cycle here")
-        shoot(True)
+        self.shoot(True)
 
     def on_radar(self, obj):
         """Object in radar event.
@@ -79,7 +78,7 @@ class BotOS:
         Arguments:
             active {Boolean} -- Toggle shooting
         """
-        Link.transmit({"fire": active})
+        self.link.transmit({"fire": active})
 
     def add_torque(self, x, y, z, w):
         """Add torque for rotation.
@@ -92,7 +91,7 @@ class BotOS:
             z {[type]} -- [description]
             w {[type]} -- [description]
         """
-        Link.transmit({"torque": {"x": x,"y": y,"z": z}})
+        self.link.transmit({"torque": {"x": x,"y": y,"z": z}})
 
     def add_force(self, x, y, z):
         """Add force for translation.
@@ -104,7 +103,7 @@ class BotOS:
             y {[type]} -- [description]
             z {[type]} -- [description]
         """
-        Link.transmit({"force": {"x": x,"y": y,"z": z}})
+        self.link.transmit({"force": {"x": x,"y": y,"z": z}})
 
 
 class Link:
@@ -123,10 +122,11 @@ class Link:
     def __init__(self, link, bot):
         self.bot = bot
         self.link = link
+        self.bot.link = self
         # Meta
         cert_url = 'https://www.symantec.com/content/en/us/enterprise/verisign/roots/VeriSign-Class%203-Public-Primary-Certification-Authority-G5.pem'
         cert_path = 'cert.pem'
-        idp = 'us-east-1:8f0d7359-36db-40ab-a361-60647128f8bf'
+        idp = 'us-east-1:36d27a2e-0bf5-4487-a964-043bf662c0b8'
         host = 'a1pfvzfzeiz9sa.iot.us-east-1.amazonaws.com'
         region = host.split('.')[2]
         # Download cert and get cognito session

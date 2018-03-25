@@ -79,15 +79,7 @@ export class Home extends React.Component {
 		// mqttClient.on('reconnect', window.mqttClientReconnectHandler);
 		mqttClient.on('message', function(topic, payload) {
 			var msg = payload.toString();
-			// var send = msg.toInt()+1;
-		
-			self.setState({ messages: self.state.messages+'\n'+msg });
-			console.log('message: ' + topic + ':' + msg);
-			// mqttClient.publish(self.state.link+'-downstream', msg.toString());
-			if (self.linkz.canEmit() === true) {
-				console.log("transmiting to simulator....");
-				self.linkz.emit(msg);
-			}
+			self.linkz.emit(msg);
 		});
 
 		return mqttClient;
@@ -106,10 +98,6 @@ export class Home extends React.Component {
 			self.linkz = new UnityEvent("Link", "MessageReceived");
 			RegisterExternalListener("TransmitMessage", self.transmitMessage.bind(self));
 			console.log("--------INITIALISED-----------");
-			// if (self.linkz.canEmit() === true) {
-			// 	console.log("CAN EMIT!!");
-			// 	self.linkz.emit("hello");
-			// }
 		},10000);
 		// RegisterExternalListener("TransmitMessage", this.transmitMessage.bind(this));
 		console.log("Constructing");
@@ -127,17 +115,7 @@ export class Home extends React.Component {
 
 	transmitMessage(message) {
 		// Send to client listening
-		
 		this.mqttClient.publish(this.state.link+'-downstream', message.toString());
-
-		// console.log(message);
-	 //    if (this.linkz.canEmit() === true) {
-		// 		console.log("2 transmiting to simulator.... "+message);
-		// 		var yo = this;
-		// 		setTimeout(function(){
-		// 			yo.linkz.emit(message);
-		// 		}, 250);
-		// 	}
 	  }
 
 	render() {
