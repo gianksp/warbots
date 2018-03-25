@@ -1,116 +1,123 @@
 """Bot Operating System
 
-An event driven Operating System for Bots
+An event driven Operating System for Bots.
 
-Variables:
-	parser {[type]} -- [description]
-	parser.add_argument("-l", "--link", action {str} -- [description]
-	args {[type]} -- [description]
-	bot {[type]} -- [description]
-	Link(args.link, bot) {[type]} -- [description]
+The BotOS class below is the only class you will have to manipulate
+to control the bot.
+
+- Actions (Commands issued to the bot):
+Can be shoot, add_force, add_torque
+
+- Events (Messages received from the simulation):
+Are prefixed with "on_"
+
+Get Started
+-----------
+
+Prerequisites:
+- Python 2.7 (https://www.python.org/downloads)
+- Pip (https://pip.pypa.io/en/stable/installing)
+
+Run:
+- python bot.py -l {link_id}
+
 """
-import boto3
-from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
-import time
-import argparse
-import urllib
-import os
-import json
-import uuid
 
 
 class BotOS:
     """BotOS Bot Operating System.
-    
-    Control the actions of a Bot via link
+
+    This is the class where you, as a programmer will interpret the events
+    received from your bot from the web simulator session and from where
+    you will issue the commands to control it.
     """
-    def cycle(self):
-    	"""Cycle event.
-    	
-    	Method that gets called on every cycle. Currently set to be called
-    	on every frame (60 frames per second configuration)
-    	"""
+    def on_cycle(self):
+        """Cycle event.
+
+        Method that gets called on every cycle. Currently set to be called
+        on every frame (60 frames per second configuration)
+        """
         print("Your code for handling each cycle here")
 
     def on_radar(self, obj):
-    	"""Object in radar event.
-    	
-    	Method that gets called when the radar sensor on the bot detects
-    	obstacles, items, allies or enemies on radar
-    	
-    	Arguments:
-    		obj {[type]} -- [description]
-    	"""
+        """Object in radar event.
+
+        Method that gets called when the radar sensor on the bot detects
+        obstacles, items, allies or enemies on radar
+
+        Arguments:
+            obj {[type]} -- [description]
+        """
         print("Your code for handling radar detection here")
 
     def on_position_change(self, position):
-    	"""Bot position change event.
-    	
-    	Method that gets called when the position of the bot changes
-    	
-    	Arguments:
-    		position {[type]} -- [description]
-    	"""
+        """Bot position change event.
+
+        Method that gets called when the position of the bot changes
+
+        Arguments:
+            position {[type]} -- [description]
+        """
         print("Your code for handling position change here")
 
     def on_rotation_change(self, rotation):
-    	"""Bot rotation change event.
-    	
-    	Method that gets called when the rotation of the bot changes
-    	
-    	Arguments:
-    		rotation {[type]} -- [description]
-    	"""
+        """Bot rotation change event.
+
+        Method that gets called when the rotation of the bot changes
+
+        Arguments:
+            rotation {[type]} -- [description]
+        """
         print("Your code for handling rotation change here")
 
-
-class BotAction:
-    """Actions that can be transmitted to the bot.
-    
-    Supported bot actions
-    - shoot (toggle True, False)
-    - add_torque rotation (Vector x, y, z)
-    - add_force translation (Vector x, y, z)
-    """
     def shoot(active):
-    	"""Toggle on shooting.
-    	
-    	Shoot while True
-    	
-    	Arguments:
-    		active {Boolean} -- Toggle shooting
-    	"""
+        """Toggle on shooting.
+
+        Shoot while True
+
+        Arguments:
+            active {Boolean} -- Toggle shooting
+        """
         Link.transmit({"fire": active})
 
     def add_torque(x, y, z, w):
-    	"""Add torque for rotation.
-    	
-    	Add a torque force over the bot
-    	
-    	Arguments:
-    		x {[type]} -- [description]
-    		y {[type]} -- [description]
-    		z {[type]} -- [description]
-    		w {[type]} -- [description]
-    	"""
+        """Add torque for rotation.
+
+        Add a torque force over the bot
+
+        Arguments:
+            x {[type]} -- [description]
+            y {[type]} -- [description]
+            z {[type]} -- [description]
+            w {[type]} -- [description]
+        """
         Link.transmit({"torque": {"x": x,"y": y,"z": z}})
 
     def add_force(x, y, z):
-    	"""Add force for translation.
-    	
-    	Add a moving force
-    	
-    	Arguments:
-    		x {[type]} -- [description]
-    		y {[type]} -- [description]
-    		z {[type]} -- [description]
-    	"""
+        """Add force for translation.
+
+        Add a moving force
+
+        Arguments:
+            x {[type]} -- [description]
+            y {[type]} -- [description]
+            z {[type]} -- [description]
+        """
         Link.transmit({"force": {"x": x,"y": y,"z": z}})
+
 
 class Link:
     """Establish link between web simulator and this worker.
-    
-    Link
+
+    This class handles the connection with the simulator
+    and the message transfer actions.
+
+    It is highly recommended that you do not modify this class
+    unless you know exactly what you are doing. This class is a wrapper
+    for the BotOS class to communicate.
+
+    Please stick to the BotOS class and extend your code from there
+    to add more functionalities.
     """
     def __init__(self, link, bot):
         self.bot = bot
@@ -129,22 +136,11 @@ class Link:
         # Subscribe to messages from simulator to this worker
         self.ws.subscribe("{}-downstream".format(self.link), 1, self.received)
         while True:
+            # 60 FPS config
             time.sleep(0.01667)
-            self.bot.cycle()
+            self.bot.on_cycle()
 
     def connect(self, cred, host, cert):
-    	"""Connect to IoT
-    	
-    	[description]
-    	
-    	Arguments:
-    		cred {[type]} -- [description]
-    		host {[type]} -- [description]
-    		cert {[type]} -- [description]
-    	
-    	Returns:
-    		[type] -- [description]
-    	"""
         ws = AWSIoTMQTTClient(uuid.uuid4().hex, useWebsocket=True)
         ws.configureEndpoint(host, 443)
         ws.configureCredentials(cert)
@@ -158,55 +154,20 @@ class Link:
         return ws
 
     def get_session(self, idp, region):
-    	"""Get Cognito session credentials
-    	
-    	[description]
-    	
-    	Arguments:
-    		idp {[type]} -- [description]
-    		region {[type]} -- [description]
-    	
-    	Returns:
-    		[type] -- [description]
-    	"""
         cognito = boto3.client('cognito-identity', region_name=region)
         identity = cognito.get_id(IdentityPoolId=idp)["IdentityId"]
         session = cognito.get_credentials_for_identity(IdentityId=identity)
         return session["Credentials"]
 
     def download_cert(self, url, cert):
-    	"""Download certificate
-    	
-    	[description]
-    	
-    	Arguments:
-    		url {[type]} -- [description]
-    		cert {[type]} -- [description]
-    	"""
         if not os.path.exists(cert):
             print("Downloading certificate...")
             urllib.urlretrieve(url, cert)
 
     def transmit(self, action):
-    	"""Send messages upstream to web simulator
-    	
-    	[description]
-    	
-    	Arguments:
-    		action {[type]} -- [description]
-    	"""
         self.ws.publish("{}-upstream".format(self.link),  json.dumps(action), 1)
 
     def received(self, client, userdata, message):
-    	"""Receive messages downstream from simulator
-    	
-    	[description]
-    	
-    	Arguments:
-    		client {[type]} -- [description]
-    		userdata {[type]} -- [description]
-    		message {[type]} -- [description]
-    	"""
         data = json.loads(message.payload)
         if "w" in data:
             self.bot.on_rotation_change(data)
@@ -214,6 +175,28 @@ class Link:
             self.bot.on_radar(data)
         else:
             self.bot.on_position_change(data)
+
+try:
+    import boto3
+    from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
+except ImportError:
+    import pip
+    import sys
+    pip.main(['install', '--user', 'boto3', 'AWSIoTPythonSDK'])
+    print '\033[92m'
+    print 'Dependencies installed successfully'
+    print u'\u2713 boto3'
+    print u'\u2713 AWSIoTPythonSDK'
+    print 'Please run again your python bot.py -l {link_id} command'
+    print u'\033[0m'
+    sys.exit(0)
+
+import time
+import argparse
+import urllib
+import os
+import json
+import uuid
 
 # Read in command-line parameters, expect -l parameter
 parser = argparse.ArgumentParser()

@@ -9,6 +9,17 @@ Warbot's battles take place in a battlefields called stages, where bots are face
 How It Works
 ------------
 
+Instructions for the supported examples below
+
+## Python
+
+### Prerequisites
+
+- Python 2.7
+- Pip
+
+### Instructions
+
 - Open the [web simulator](https://app.warbots.io)
 - Take a note of the ***link id*** that is generated for your session
 - Follow the link to download the python bot sample template or use your own
@@ -16,9 +27,16 @@ How It Works
 
 ```bash
 # Example python template
-pip install requirements.txt
 python run bot.py -l {link_id}
 ```
+
+> The first time that you run the bot command the template will install the dependencies and ask you to run the command again.
+
+### Writing your own code
+
+- [Get started](https://github.com/gianksp/warbots/wiki/https://github.com/gianksp/warbots/wiki/Getting-Started)
+- [API reference](https://github.com/gianksp/warbots/wiki/API)
+
 
 Initiative
 ----------
@@ -38,14 +56,12 @@ Game Physics
 
 - 3D Physics
 
-![](http://i.imgur.com/zNdRzEJ.gif)
-
-[Codepen](https://codepen.io/gianksp/pen/LLjqvM/#0)
-
 
 Development
 ----------
 
 The bots can be programmed using any language but will require the integration with AWS Cognito and Authentication. I will be providing guides for this. To start, there will be available a Python SDK and a Bot file for players to start.
+
+I will also be testing Docker and how easier it makes the player experience. Any feedback would be greatly appreciated.
 
 Please be patient with the development.
