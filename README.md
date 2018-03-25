@@ -20,7 +20,7 @@ Instructions for the supported examples below
 
 ### Instructions
 
-- Open the [web simulator](https://app.warbots.io)
+- Open the [web simulator](https://warbots.io) (To be released Q4 2018)
 - Take a note of the ***link id*** that is generated for your session
 - Follow the link to download the python bot sample template or use your own
 - Run your project using the ***link id*** reference from above

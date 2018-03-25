@@ -18,7 +18,7 @@
  * example application.
  */
 var awsConfiguration = {
-   poolId: 'us-east-1:e0f2dcf7-3b7a-4151-ac45-da517964bd2b', // 'YourCognitoIdentityPoolId'
+   poolId: 'us-east-1:8f0d7359-36db-40ab-a361-60647128f8bf', // 'YourCognitoIdentityPoolId'
    host: 'a1pfvzfzeiz9sa.iot.us-east-1.amazonaws.com', // 'YourAwsIoTEndpoint', e.g. 'prefix.iot.us-east-1.amazonaws.com'
    region: 'us-east-1' // 'YourAwsRegion', e.g. 'us-east-1'
 };
