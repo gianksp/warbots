@@ -1,4 +1,4 @@
-"""Bot Operating System
+"""Bot Operating System.
 
 An event driven Operating System for Bots.
 
@@ -31,6 +31,7 @@ class BotOS:
     received from your bot from the web simulator session and from where
     you will issue the commands to control it.
     """
+
     def on_cycle(self):
         """Cycle event.
 
@@ -119,6 +120,7 @@ class Link:
     Please stick to the BotOS class and extend your code from there
     to add more functionalities.
     """
+
     def __init__(self, link, bot):
         self.bot = bot
         self.link = link
@@ -163,7 +165,7 @@ class Link:
     def download_cert(self, url, cert):
         if not os.path.exists(cert):
             print("Downloading certificate...")
-            urllib.urlretrieve(url, cert)
+            urlretrieve(url, cert)
 
     def transmit(self, action):
         self.ws.publish("{}-upstream".format(self.link),  json.dumps(action), 1)
@@ -184,17 +186,23 @@ except ImportError:
     import pip
     import sys
     pip.main(['install', '--user', 'boto3', 'AWSIoTPythonSDK'])
-    print '\033[92m'
-    print 'Dependencies installed successfully'
-    print u'\u2713 boto3'
-    print u'\u2713 AWSIoTPythonSDK'
-    print 'Please run again your python bot.py -l {link_id} command'
-    print u'\033[0m'
+    print('\x1b[6;30;42m Dependencies Installed Successfully \x1b[0m')
+    print('\x1b[6;30;42m Please run again your python bot.py -l [link_id] command \x1b[0m')
     sys.exit(0)
 
 import time
 import argparse
-import urllib
+
+import sys
+
+if sys.version_info[0] >= 3:
+    from urllib.request import urlretrieve
+else:
+    # Not Python 3 - today, it is most likely to be Python 2
+    # But note that this might need an update when Python 4
+    # might be around one day
+    from urllib import urlretrieve
+
 import os
 import json
 import uuid
