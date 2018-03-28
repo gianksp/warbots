@@ -15,7 +15,7 @@ public class Bot : MonoBehaviour
 	public Team team = Team.RED;
 
 
-	public string name;
+	public string nameLabel;
 	public string username;
 
 	private Transform target;
@@ -40,6 +40,8 @@ public class Bot : MonoBehaviour
 
 	private Rigidbody __rb;
 
+	private FinishLine _finishLine;
+
 	private BasicMessage.MatchEvent __state = BasicMessage.MatchEvent.PREPARING;
 
 	/// <summary>
@@ -54,6 +56,20 @@ public class Bot : MonoBehaviour
 		__rb = gameObject.GetComponent<Rigidbody> ();
 	}
 
+	public void Heat() {
+		__currentHeat+=1;
+	}
+
+	public float GetHeat() {
+		return __currentHeat;
+	}
+
+	public void Cooldown() {
+		if (__currentHeat > 0) {
+			__currentHeat-=1;
+		}
+	}
+
 	/// <summary>
 	/// Initialise
 	/// </summary>
@@ -62,7 +78,11 @@ public class Bot : MonoBehaviour
 		__currentPos = transform.position;
 		__currentRot = transform.rotation;
 		__currentFire = false;
+
+		InvokeRepeating("UpdateClients",0f,0.5f);
+    InvokeRepeating("Cooldown", 1.0f, 1.0f);
 	}
+
 
 	public void OnScan(GameObject obj)
 	{
@@ -100,6 +120,7 @@ public class Bot : MonoBehaviour
 				break;
 			}
 		} catch(Exception ex) {
+			Debug.Log(ex.ToString());
 		}
 	}
 
@@ -119,29 +140,23 @@ public class Bot : MonoBehaviour
 			Destroy (this);
 		}
 	}
-		
+
 	public void OnDeath() {
-	
+
 	}
 
 	public void OnTempChange(float old, float actual) {
-		
+
 	}
 
-	/// <summary>
-	/// Handle physics
-	/// </summary>
-	void LateUpdate ()
-	{
-		/************************* DOWNSTREAM SIMULATOR -> CLIENT ***********************/
-
-		//Game state changed
-		// if (__state == BasicMessage.MatchEvent.PREPARING) {
-		// 	__state = BasicMessage.MatchEvent.START;
-		// 	MatchStateMessage msg = new MatchStateMessage ();
-		// 	msg.state = __state;
-		// 	Link.SendMatchUpdateMessage(msg);
-		// }
+	void UpdateClients() {
+		// Game state changed
+		if (__state == BasicMessage.MatchEvent.PREPARING) {
+			__state = BasicMessage.MatchEvent.START;
+			MatchStateMessage msg = new MatchStateMessage ();
+			msg.state = __state;
+			Link.SendMatchUpdateMessage(msg);
+		}
 
 		//Position downstream
 		if (__currentPos != transform.position) {
@@ -154,6 +169,16 @@ public class Bot : MonoBehaviour
 			__currentRot = transform.rotation;
 			Link.SendRotationUpdateMessage (__currentRot);
 		}
+	}
+
+	/// <summary>
+	/// Handle physics
+	/// </summary>
+	void LateUpdate ()
+	{
+		/************************* DOWNSTREAM SIMULATOR -> CLIENT ***********************/
+
+
 
 		/************************* UPSTREAM CLIENT -> SIMULATOR ***********************/
 
@@ -174,17 +199,20 @@ public class Bot : MonoBehaviour
 			__applyTorque = Vector3.zero;
 		}
 	}
-		
+
 	public void ApplyForce(Vector3 vector) {
 		__applyForce = vector;
+		Heat();
 	}
 
 	public void ApplyTorque(Vector3 vector) {
 		__applyTorque = vector;
+		Heat();
 	}
 
 	public void SetFiring(bool firing) {
 		__isFiring = firing;
+		Heat();
 	}
-		
+
 }

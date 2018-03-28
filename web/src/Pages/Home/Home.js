@@ -64,14 +64,14 @@ export class Home extends React.Component {
 		});
 
 		mqttClient.on('connect', function() {
-			
+
 			// console.log(lnk);
 			self.setState({ connected: true });
 			mqttClient.subscribe(self.state.link+'-upstream');
 		});
 
 		mqttClient.on('offline', function() {
-			
+
 			// console.log(lnk);
 			self.setState({ connected: false });
 		});
@@ -86,13 +86,13 @@ export class Home extends React.Component {
 	}
 
 	componentDidMount() {
-	  
+
 		this.setState({ linkt: 'connecting...' });
 	}
 
 	constructor() {
 		super();
-		
+
 		var self = this;
 		setTimeout(function(){
 			self.linkz = new UnityEvent("Link", "MessageReceived");
@@ -113,6 +113,16 @@ export class Home extends React.Component {
 	  }
 	}
 
+	copyClipboard () {
+
+		var textField = document.createElement('textarea');
+    textField.innerText = document.getElementById('link_id').innerText;
+    document.body.appendChild(textField);
+    textField.select();
+    document.execCommand('copy');
+    textField.remove();
+	}
+
 	transmitMessage(message) {
 		// Send to client listening
 		this.mqttClient.publish(this.state.link+'-downstream', message.toString());
@@ -123,17 +133,19 @@ export class Home extends React.Component {
 		var status = this.state.connected ? (
 			<div>
 	      		<div>Connected!</div>
-	      		<div>Download <a href='https://cdn.rawgit.com/gianksp/warbots/master/samples/python/bot.py'>bot.py</a> and run: python LINK={this.state.link} bot.py</div>
+	      		<div>Download <a href='https://cdn.rawgit.com/gianksp/warbots/master/samples/python/bot.py'>bot.py</a> and run: <b>python bot.py -l {this.state.link}</b> </div>
 	      	</div>
 	    ) : (
 	      <div>Connecting...</div>
 	    );
 
+		var lnk = (<a id="link_id" onClick={this.copyClipboard}>{this.state.link}</a>);
+
 		return (
 			<div>
 			    <div className="columns">
 			        <div className="column is-half is-offset-one-quarter">
-			            <div>Bot link: {this.state.link} </div>
+			            <div>Bot link: {lnk}</div>
 			            <div>{status}</div>
 			            <div>{this.state.messages}</div>
 			        </div>

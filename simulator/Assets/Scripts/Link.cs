@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 public class Link : MonoBehaviour {
 
 	public string latestaction = "gg";
+	public float msg = 0;
+public GUIStyle style;
 
 	/*!
 	 * Relay json event to JS for sending it via WS to client
@@ -14,10 +16,17 @@ public class Link : MonoBehaviour {
   	public static extern void TransmitMessage (string message);
 
   	private Bot __bot;
+		private FinishLine __finishLine;
 
   	void Start() {
   		__bot = GameObject.FindWithTag("Player").GetComponent<Bot>();
+			__finishLine = GameObject.FindWithTag("FinishLine").GetComponent<FinishLine>();
+			// InvokeRepeating("Overheat",0f,1f);
   	}
+
+		// void Overheat() {
+		// 	MessageReceived("{\"fire\": true}");
+		// }
 
   	/*!
   	 * Receive message from JS application via IoT WS
@@ -27,15 +36,17 @@ public class Link : MonoBehaviour {
 		Debug.Log("------>message received...");
 		Debug.Log(message);
 		BotAction action = JsonUtility.FromJson<BotAction>(message);
-
+		msg++;
 		this.latestaction = JsonUtility.ToJson(action);
-		if (action.fire != null)
+		if (action.fire == true || action.fire == false) {
 			__bot.SetFiring(action.fire);
-		if (action.force != null)
+		}
+		if (action.force != null && action.force != Vector3.zero) {
 			__bot.ApplyForce(action.force);
-		if (action.torque != null)
+		}
+		if (action.torque != null && action.torque != Vector3.zero) {
 			__bot.ApplyTorque(action.torque);
-		// Call set firing, add torque and add force
+		}
 	}
 
 	public static void SendScanMessage(ScanMessage msg) {
@@ -50,7 +61,7 @@ public class Link : MonoBehaviour {
 		try {
 			TransmitMessage(JsonUtility.ToJson(msg));
 		} catch {
-			
+
 		}
 	}
 
@@ -58,7 +69,7 @@ public class Link : MonoBehaviour {
 		try {
 			TransmitMessage(JsonUtility.ToJson(position));
 		} catch {
-			
+
 		}
 	}
 
@@ -66,13 +77,12 @@ public class Link : MonoBehaviour {
 		try {
 			TransmitMessage(JsonUtility.ToJson(rotation));
 		} catch {
-			
+
 		}
 	}
 
-	 void OnGUI() {
-        if (GUI.Button(new Rect(10, 10, 450, 100), this.latestaction))
-            print("You clicked the button!");
-        
-    }
+
+	void OnGUI() {
+		 GUI.Label(new Rect(50, Screen.height-100, 300, 20), "Incoming messages "+msg.ToString(), style);
+ }
 }

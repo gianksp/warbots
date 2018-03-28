@@ -36,9 +36,9 @@ class BotOS:
         """Cycle event.
 
         Method that gets called on every cycle. Currently set to be called
-        on every frame (60 frames per second configuration)
+        on every second.
         """
-        self.shoot(True)
+        self.add_force(0, 0, 5000)
 
     def on_radar(self, obj):
         """Object in radar event.
@@ -139,8 +139,7 @@ class Link:
         # Subscribe to messages from simulator to this worker
         self.ws.subscribe("{}-downstream".format(self.link), 1, self.received)
         while True:
-            # 60 FPS config
-            time.sleep(0.01667)
+            time.sleep(1)
             self.bot.on_cycle()
 
     def connect(self, cred, host, cert):

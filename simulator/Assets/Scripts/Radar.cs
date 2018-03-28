@@ -31,16 +31,13 @@ public class Radar : BaseObject
 		if (viewMeshFilter) {
 			viewMeshFilter.mesh = viewMesh;
 		}
-		StartCoroutine ("FindTargetsWithDelay", .2f);
+		InvokeRepeating ("FindTargetsWithDelay", 0.5f, 0.5f);
 	}
 
 
-	IEnumerator FindTargetsWithDelay (float delay)
+	void FindTargetsWithDelay ()
 	{
-		while (true) {
-			yield return new WaitForSeconds (delay);
-			FindVisibleTargets ();
-		}
+		FindVisibleTargets ();
 	}
 
 	void LateUpdate ()
