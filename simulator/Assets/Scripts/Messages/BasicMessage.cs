@@ -6,7 +6,7 @@ public class BasicMessage : MonoBehaviour {
 
 	public enum MatchEvent { PREPARING, START, END, INPROGRESS };  
 	public enum RadarEvent { SCAN, HIT, KILL }
-	public enum BotEvent { POSITION, ROTATION, HP, HEAT, COLLIDE, FORCE, TORQUE };  
+	public enum BotEvent { STATUS, POSITION, ROTATION, HP, HEAT, COLLIDE, FORCE, TORQUE };  
 	public enum BotAction { SHOOT, FORCE, TORQUE }; 
 
 	public enum Scannable { PLAYER, OBSTACLE, BULLET, GROUND, BOUNDARY }; 

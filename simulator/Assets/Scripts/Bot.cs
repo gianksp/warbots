@@ -26,6 +26,8 @@ public class Bot : MonoBehaviour
 	public Radar radar;
 	public Frame frame;
 
+	private List<ScanObject> __scanned;
+
 	//State
 	private Vector3 __currentPos;
 	private Quaternion __currentRot;
@@ -78,47 +80,59 @@ public class Bot : MonoBehaviour
 		__currentPos = transform.position;
 		__currentRot = transform.rotation;
 		__currentFire = false;
+		__scanned = new List<ScanObject>();
 
-		InvokeRepeating("UpdateClients",0f,0.5f);
-    InvokeRepeating("Cooldown", 1.0f, 1.0f);
+		InvokeRepeating("UpdateBot",0f,0.5f);
+    	InvokeRepeating("Cooldown", 1.0f, 1.0f);
+    	InvokeRepeating("UpdateRadar", 0.5f, 1.0f);
 	}
 
+	void UpdateBot() {
+
+		//Build the radar scan info object
+		ScanObject thisBot = new ScanObject();
+
+		try {
+			//3 tags are eval here? player = bot, bullets, obstacles
+			thisBot.position = transform.position;
+			thisBot.rotation = transform.rotation.eulerAngles;
+
+			thisBot.velocity = __rb.velocity;
+			thisBot.angularVelocity = __rb.angularVelocity;
+			
+			thisBot.id = Mathf.Abs(GetInstanceID());
+			thisBot.eventType = BasicMessage.BotEvent.STATUS.ToString();
+			Link.SendStatusMessage(thisBot);
+
+		} catch(Exception ex) {
+			Debug.Log(ex.ToString());
+		}
+	}
+
+	void UpdateRadar() {
+		Link.SendScanMessage(__scanned.ToArray());
+		__scanned.Clear();
+	}
 
 	public void OnScan(GameObject obj)
 	{
 		//Build the radar scan info object
-		ScanMessage msg = new ScanMessage();
+		ScanObject scan = new ScanObject();
 
 		try {
 			//3 tags are eval here? player = bot, bullets, obstacles
-			BasicMessage.Scannable action = (BasicMessage.Scannable)Enum.Parse(typeof(BasicMessage.Scannable),obj.transform.tag.ToUpper());
-			msg.position = obj.transform.position;
-			msg.rotation = obj.transform.rotation;
-			msg.name = obj.transform.tag;
-			switch (action) {
-			case BasicMessage.Scannable.PLAYER:
-				msg.type = BaseObject.BaseObjectType.BOT.ToString();
-				Bot ebot = obj.GetComponent<Bot>();
-				msg.team = ebot.team.ToString();
-				msg.heat = ebot.__currentHeat;
-				msg.isFiring = ebot.__isFiring;
-				msg.maxHeat = ebot.frame.maxHeat;
-				msg.maxHp = ebot.frame.maxHp;
-				Link.SendScanMessage(msg);
-				break;
-			case BasicMessage.Scannable.BULLET:
-				msg.type = BaseObject.BaseObjectType.PROJECTILE.ToString();
-				Link.SendScanMessage(msg);
-				break;
-			case BasicMessage.Scannable.OBSTACLE:
-				msg.type = BaseObject.BaseObjectType.OBSTACLE.ToString();
-				Link.SendScanMessage(msg);
-				break;
-			case BasicMessage.Scannable.BOUNDARY:
-				msg.type = BaseObject.BaseObjectType.BOUNDARY.ToString();
-				Link.SendScanMessage(msg);
-				break;
-			}
+			scan.position = obj.transform.position;
+			scan.rotation = obj.transform.rotation.eulerAngles;
+
+			Rigidbody rb = obj.GetComponent<Rigidbody>();
+
+			scan.velocity = rb.velocity;
+			scan.angularVelocity = rb.angularVelocity;
+			
+			scan.id = Mathf.Abs(obj.GetInstanceID());
+			scan.eventType = BasicMessage.RadarEvent.SCAN.ToString();
+			__scanned.Add(scan);
+
 		} catch(Exception ex) {
 			Debug.Log(ex.ToString());
 		}
@@ -149,27 +163,27 @@ public class Bot : MonoBehaviour
 
 	}
 
-	void UpdateClients() {
-		// Game state changed
-		if (__state == BasicMessage.MatchEvent.PREPARING) {
-			__state = BasicMessage.MatchEvent.START;
-			MatchStateMessage msg = new MatchStateMessage ();
-			msg.state = __state;
-			Link.SendMatchUpdateMessage(msg);
-		}
+	// void UpdatePosition() {
+	// 	// Game state changed
+	// 	if (__state == BasicMessage.MatchEvent.PREPARING) {
+	// 		__state = BasicMessage.MatchEvent.START;
+	// 		MatchStateMessage msg = new MatchStateMessage ();
+	// 		msg.state = __state;
+	// 		Link.SendMatchUpdateMessage(msg);
+	// 	}
 
-		//Position downstream
-		if (__currentPos != transform.position) {
-			__currentPos = transform.position;
-			Link.SendPositionUpdateMessage (__currentPos);
-		}
+	// 	//Position downstream
+	// 	if (__currentPos != transform.position) {
+	// 		__currentPos = transform.position;
+	// 		Link.SendPositionUpdateMessage (__currentPos);
+	// 	}
 
-		//Rotation downstream
-		if (__currentRot != transform.rotation) {
-			__currentRot = transform.rotation;
-			Link.SendRotationUpdateMessage (__currentRot);
-		}
-	}
+	// 	//Rotation downstream
+	// 	if (__currentRot != transform.rotation) {
+	// 		__currentRot = transform.rotation;
+	// 		Link.SendRotationUpdateMessage (__currentRot);
+	// 	}
+	// }
 
 	/// <summary>
 	/// Handle physics

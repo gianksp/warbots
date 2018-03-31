@@ -49,8 +49,23 @@ public GUIStyle style;
 		}
 	}
 
-	public static void SendScanMessage(ScanMessage msg) {
+	public static void SendScanMessage(ScanObject[] msg) {
 		try {
+			Debug.Log("TOTAL->"+msg.Length);
+			foreach(ScanObject o in msg) {
+				Debug.Log(JsonUtility.ToJson(o))
+				;
+			}
+			// Debug.Log(JsonUtility.ToJson(msg));
+			TransmitMessage(JsonUtility.ToJson(msg));
+		} catch {
+
+		}
+	}
+
+	public static void SendStatusMessage(ScanObject msg) {
+		try {
+			Debug.Log(JsonUtility.ToJson(msg));
 			TransmitMessage(JsonUtility.ToJson(msg));
 		} catch {
 

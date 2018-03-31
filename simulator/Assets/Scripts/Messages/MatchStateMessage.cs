@@ -5,7 +5,7 @@ using UnityEngine;
 public class MatchStateMessage {
 
 	//About the bot
-	public ScanMessage metadata;
+	public ScanObject metadata;
 
 	//Match state
 	public BasicMessage.MatchEvent state;

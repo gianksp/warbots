@@ -14,7 +14,6 @@ public class FinishLine : MonoBehaviour {
   public GUIStyle style;
   void Start() {
     Time.timeScale = 1;
-    Debug.Log(Time.timeScale.ToString());
     _over = false;
     __bot = GameObject.FindWithTag("Player").GetComponent<Bot>();
   }

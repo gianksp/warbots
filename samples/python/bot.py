@@ -38,20 +38,21 @@ class BotOS:
         Method that gets called on every cycle. Currently set to be called
         on every second.
         """
-        self.add_force(0, 0, 5000)
+        # self.add_force(0, 0, 5000)
+        print("Your code for handling cycle here")
 
     def on_radar(self, obj):
         """Object in radar event.
 
-        Method that gets called when the radar sensor on the bot detects
-        obstacles, items, allies or enemies on radar
+        Method that gets called when the radar sensor goes through a
+        whole scanning cycle and returns a list of visualized objects
 
         Arguments:
             obj {[type]} -- [description]
         """
         print("Your code for handling radar detection here")
 
-    def on_position_change(self, position):
+    def on_update(self, position):
         """Bot position change event.
 
         Method that gets called when the position of the bot changes
@@ -59,17 +60,7 @@ class BotOS:
         Arguments:
             position {[type]} -- [description]
         """
-        print("Your code for handling position change here")
-
-    def on_rotation_change(self, rotation):
-        """Bot rotation change event.
-
-        Method that gets called when the rotation of the bot changes
-
-        Arguments:
-            rotation {[type]} -- [description]
-        """
-        print("Your code for handling rotation change here")
+        print("Your code for handling position, rotation and state changes")
 
     def shoot(self, active):
         """Toggle on shooting.
@@ -171,12 +162,11 @@ class Link:
 
     def received(self, client, userdata, message):
         data = json.loads(message.payload)
-        if "w" in data:
-            self.bot.on_rotation_change(data)
-        elif "type" in data:
+        event_type = data.get('eventType', None)
+        if "SCAN" is event_type:
             self.bot.on_radar(data)
-        else:
-            self.bot.on_position_change(data)
+        elif "STATUS" is event_type:
+            self.bot.on_update(data)
 
 try:
     import boto3
